@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="/stylesheets/bootstrap.css" rel="stylesheet">
+    <title>Stock Tracker</title>
+  </head>
+  <body ng-app="StockTracker">
+    <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl as ctrl">
+      <ul class="nav navbar-nav">
+        <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+        <li ng-show="isLoggedIn()"><a href="" ng-click="ctrl.logOut()">Log Out</a></li>
+        <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
+        <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
+      </ul>
+    </nav>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <ui-view></ui-view>
+        <br/>
+        <footer>
+          <div>
+            <p>
+              Copyright © 2015. All market data provided by Barchart Market Data Solutions.<br/>
+              BATS market data is at least 15-minutes delayed. Forex market data is at least 10-minutes delayed. AMEX, NASDAQ, NYSE and futures market data (CBOT, CME, COMEX and NYMEX) is end-of-day. Information is provided 'as is' and solely for informational purposes, not for trading purposes or advice, and is delayed. To see all exchange delays and terms of use, please see our disclaimer.
+            </p>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script type="text/ng-template" id="/home.html">
+      <div class="page-header">
+        <h1>Stock Tracker</h1>
+      </div>
+      <!-- // This ng-controller shouldn't be necessary, strictly speaking - it means
+      // that the ui-router isn't working properly -->
+      <section ng-controller="MainController as ctrl">
+        <div ng-repeat="stock in ctrl.stocks | orderBy: 'ticker'" >
+          <span style="font-size:20px; margin-left:10px;">
+            <span ng-bind='stock.name'></span> | <span ng-bind='stock.ticker'></span> | <span ng-bind='stock.price'></span>
+          </span>
+          <span ng-show="stock.owner">
+            followed by <span ng-bind='stock.owner'></span>
+          </span>
+        </div>
+        <br/>
+        <br/>
+        <div ng-hide="ctrl.isLoggedIn()">
+          <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a stock to the watchlist.</h3>
+        </div>
+        <div ng-show="ctrl.isLoggedIn()">
+          <div ng-show="adderEnabled">
+            <h3>Add a Stock to the Watchlist</h3>
+            <form class="create_stock" ng-submit="ctrl.addStock(); adderEnabled=!adderEnabled">
+              <div class="form-group">
+                <input type="text"
+                  class="form-control"
+                  placeholder="Company Name"
+                  ng-model="ctrl.name"></input>
+              </div>
+              <div class="form-group">
+                <input type="text"
+                class="form-control"
+                placeholder="Ticker"
+                ng-model="ctrl.ticker"></input>
+              </div>
+              <input type="submit" id="submit" value="Submit" class="btn btn-primary"/>
+              <a href="#" class="btn btn-primary" ng-click="adderEnabled=!adderEnabled">Cancel</a>
+            </form>
+          </div>
+          <button href="#" class="btn btn-primary" ng-click="adderEnabled=!adderEnabled"
+                  ng-hide="adderEnabled">Add a Stock to the Watchlist</button>
+        </div>
+      </section>
+    </script>
+
+    <script type="text/ng-template" id="/register.html">
+      <div class="page-header">
+        <h1>Stock Tracker</h1>
+      </div>
+
+      <div ng-show="error" class="alert alert-danger row">
+        <span>{{ error.message }}</span>
+      </div>
+
+      <form ng-submit="register()"
+        style="margin-top:30px;">
+        <h3>Register</h3>
+
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="Username"
+          ng-model="user.username"></input>
+        </div>
+        <div class="form-group">
+          <input type="password"
+          class="form-control"
+          placeholder="Password"
+          ng-model="user.password"></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+    </script>
+
+    <script type="text/ng-template" id="/login.html">
+      <div class="page-header">
+        <h1>Stock Tracker</h1>
+      </div>
+
+      <div ng-show="error" class="alert alert-danger row">
+        <span>{{ error.message }}</span>
+      </div>
+
+      <form ng-submit="logIn()"
+        style="margin-top:30px;">
+        <h3>Log In</h3>
+
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="Username"
+          ng-model="user.username"></input>
+        </div>
+        <div class="form-group">
+          <input type="password"
+          class="form-control"
+          placeholder="Password"
+          ng-model="user.password"></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Log In</button>
+      </form>
+      </script>
+
+    <script src="/javascripts/jquery-2.1.4.js" charset="utf-8"></script>
+    <script src="/javascripts/angular.stable.js" charset="utf-8"></script>
+    <script src="/javascripts/angular-ui-router.js" charset="utf-8"></script>
+    <script src="/javascripts/angularApp.js" charset="utf-8"></script>
+  </body>
+</html>
