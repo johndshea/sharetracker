@@ -8,7 +8,7 @@ var mongoose     = require('mongoose'),
 /* set universal variables, required for Heroku to work */
     PORT         = process.env.PORT,
     MONGOURI     = process.env.MONGOLAB_URI,
-    dbname       = "heroku_vlj5n479";
+    dbname       = "sharetracker";
 var passport = require('passport');
 
 require('./models/Stocks');
