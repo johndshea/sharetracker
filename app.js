@@ -7,8 +7,8 @@ var bodyParser   = require('body-parser');
 var mongoose     = require('mongoose'),
 /* set universal variables, required for Heroku to work */
     PORT         = process.env.PORT || 1337,
-    MONGOURI     = process.env.MONGOLAB_URI, // "mongodb://localhost:27017",
-    dbname       = "sharetracker";
+    MONGOURI     = process.env.MONGOLAB_URI, // "mongodb://localhost:27017/sharetracker",
+    dbname       = "heroku_vlj5n479";
 var passport = require('passport');
 
 require('./models/Stocks');
