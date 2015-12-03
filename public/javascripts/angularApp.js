@@ -108,7 +108,7 @@ function($stateProvider, $urlRouterProvider) {
       // Make Barchart API call for stock price
       var key = '11160ccd699a7a9e14a5426c1a42ba64';
       data.forEach(function(stock, i, array){
-        var url = 'https://marketdata.websol.barchart.com/getQuote.jsonp?key=' +
+        var url = '//marketdata.websol.barchart.com/getQuote.jsonp?key=' +
         key + '&symbols=' + stock.ticker + ',';
         $.ajax({
           type: 'GET',
