@@ -104,19 +104,21 @@ function($stateProvider, $urlRouterProvider) {
 
   // Retrieve all stocks from the database
   o.getAll = function() {
-    return $http.get('/stocks').success(function(data){
-      var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22YHOO%22%2C%22AAPL%22%2C%22GOOG%22%2C%22MSFT%22)%0A%09%09&format=json&diagnostics=true&env=http%3A%2F%2Fdatatables.org%2Falltables.env';
-      data.forEach(function(stock, i, array){
+    return $http.get('/stocks').success(function(stocks){
+      stocks.forEach(function(stock, i, array){
         $.ajax({
           type: 'GET',
-      		url: url,
-      		// async: true,
-      		// contentType: "application/json",
-      		// dataType: 'json'
-      	}).success(function(data){
-          console.log(data);
-            // stock.price = data.results[0].lastPrice;
-            // o.stocks.push(stock);
+      		url: 'https://query.yahooapis.com/v1/public/yql?' +
+               'q=select%20*%20from%20yahoo.finance.quotes' +
+               '%20where%20symbol%20=%20"' + stock.ticker + '"%0A%09%09' +
+               '&format=json' +
+               '&diagnostics=true' +
+               '&env=http%3A%2F%2Fdatatables.org%2Falltables.env',
+      		async: true,
+      	}).success(function(yahoo_response){
+          console.log(yahoo_response);
+            stock.price = yahoo_response.query.results.quote.Bid;
+            o.stocks.push(stock);
           });
       });
 
