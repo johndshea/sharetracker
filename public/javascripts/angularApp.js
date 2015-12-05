@@ -105,22 +105,38 @@ function($stateProvider, $urlRouterProvider) {
   // Retrieve all stocks from the database
   o.getAll = function() {
     return $http.get('/stocks').success(function(data){
-      // Make Barchart API call for stock price
-      var key = '11160ccd699a7a9e14a5426c1a42ba64';
+      var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22YHOO%22%2C%22AAPL%22%2C%22GOOG%22%2C%22MSFT%22)%0A%09%09&format=json&diagnostics=true&env=http%3A%2F%2Fdatatables.org%2Falltables.env';
       data.forEach(function(stock, i, array){
-        var url = 'http://marketdata.websol.barchart.com/getQuote.jsonp?key=' +
-        key + '&symbols=' + stock.ticker + ',';
         $.ajax({
           type: 'GET',
       		url: url,
-      		async: true,
-      		contentType: "application/json",
-      		dataType: 'jsonp'
+      		// async: true,
+      		// contentType: "application/json",
+      		// dataType: 'json'
       	}).success(function(data){
-            stock.price = data.results[0].lastPrice;
-            o.stocks.push(stock);
+          console.log(data);
+            // stock.price = data.results[0].lastPrice;
+            // o.stocks.push(stock);
           });
       });
+
+      // Make Barchart API call for stock price
+      // var key = '11160ccd699a7a9e14a5426c1a42ba64';
+      // data.forEach(function(stock, i, array){
+      //   var url = 'http://marketdata.websol.barchart.com/getQuote.jsonp?key=' +
+      //   key + '&symbols=' + stock.ticker + ',';
+      //   $.ajax({
+      //     type: 'GET',
+      // 		url: url,
+      // 		async: true,
+      // 		contentType: "application/json",
+      // 		dataType: 'jsonp'
+      // 	}).success(function(data){
+      //       stock.price = data.results[0].lastPrice;
+      //       o.stocks.push(stock);
+      //     });
+      // });
+
     });
   };
 
