@@ -38,7 +38,9 @@
       <section ng-controller="MainController as ctrl">
         <div ng-repeat="stock in ctrl.stocks | orderBy: 'ticker'" >
           <span style="font-size:20px; margin-left:10px;">
-            <span ng-bind='stock.name'></span> | <span ng-bind='stock.ticker'></span> | <span ng-bind='stock.price'></span>
+            <span ng-bind='stock.Name'></span> |
+            <span ng-bind='stock.Symbol'></span> |
+            <span ng-bind='stock.Bid + stock.Ask / 2'></span>
           </span>
           <span ng-show="stock.owner">
             followed by <span ng-bind='stock.owner'></span>

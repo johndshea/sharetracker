@@ -108,16 +108,18 @@ function($stateProvider, $urlRouterProvider) {
       stocks.forEach(function(stock, i, array){
         $.ajax({
           type: 'GET',
-      		url: 'https://query.yahooapis.com/v1/public/yql?' +
-               'q=select%20*%20from%20yahoo.finance.quotes' +
-               '%20where%20symbol%20=%20"' + stock.ticker + '"%0A%09%09' +
-               '&format=json' +
-               '&diagnostics=true' +
-               '&env=http%3A%2F%2Fdatatables.org%2Falltables.env',
+      		url: 'https://query.yahooapis.com/v1/public/yql?',
+          data: {
+            q: 'select * from yahoo.finance.quotes' +
+            ' where symbol = "' + stock.ticker + '"',
+            format: 'json',
+            diagnostics: false,
+            env: 'http://datatables.org/alltables.env'
+          },
       		async: true,
       	}).success(function(yahoo_response){
-          console.log(yahoo_response);
-            stock.price = yahoo_response.query.results.quote.Bid;
+            stock = yahoo_response.query.results.quote;
+            console.log(stock);
             o.stocks.push(stock);
           });
       });
@@ -165,7 +167,7 @@ function($stateProvider, $urlRouterProvider) {
   this.stocks = stocks.stocks;
   this.isLoggedIn = auth.isLoggedIn;
 
-  var updateDOM = $timeout(function(){this.stocks = stocks.stocks;}, 5000);
+  // var updateDOM = $timeout(function(){this.stocks = stocks.stocks;}, 5000);
 
   this.addStock = function() {
     if(!controller.name || !controller.ticker || controller.name === ''|| controller.ticker === '') {
@@ -179,7 +181,7 @@ function($stateProvider, $urlRouterProvider) {
     });
     controller.name = '';
     controller.ticker = '';
-    updateDOM();
+    o.getAll();
   };
 
 }])
