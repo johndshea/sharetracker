@@ -4,7 +4,52 @@
     <meta charset="utf-8">
     <title>ShareTracker</title>
   </head>
-  <body>
-    
+  <body ng-app="ShareTracker">
+      <div class="page-header">
+        <h1>Stock Tracker</h1>
+      </div>
+      <section ng-controller="MainController as ctrl">
+        <div ng-repeat="stock in ctrl.stocks | orderBy: 'ticker'" >
+          <span style="font-size:20px; margin-left:10px;">
+            <span ng-bind='stock.Name'></span> |
+            <span ng-bind='stock.Symbol'></span> |
+            <span ng-bind='stock.Bid + stock.Ask / 2'></span>
+          </span>
+        </div>
+          <div ng-show="adderEnabled">
+            <h3>Add a Stock to the Watchlist</h3>
+            <form class="create_stock" ng-submit="ctrl.addStock(); adderEnabled=!adderEnabled">
+              <div class="form-group">
+                <input type="text"
+                  class="form-control"
+                  placeholder="Company Name"
+                  ng-model="ctrl.name"></input>
+              </div>
+              <div class="form-group">
+                <input type="text"
+                class="form-control"
+                placeholder="Ticker"
+                ng-model="ctrl.ticker"></input>
+              </div>
+              <input type="submit" id="submit" value="Submit" class="btn btn-primary"/>
+              <a href="#" class="btn btn-primary" ng-click="adderEnabled=!adderEnabled">Cancel</a>
+            </form>
+          </div>
+          <button href="#" class="btn btn-primary" ng-click="adderEnabled=!adderEnabled"
+                  ng-hide="adderEnabled">Add a Stock to the Watchlist</button>
+      </section>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <footer>
+          <div>
+            <p>
+              Copyright © 2015. All market data provided by Yahoo! Finance via the YQL REST API.<br/>
+            </p>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+    <script src="/js/app.js" charset="utf-8"></script>
   </body>
 </html>

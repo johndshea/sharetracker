@@ -1,4 +1,5 @@
 var express = require('express'),
+    session = require('express-session'),
     router  = express.Router(),
     bcrypt  = require('bcrypt'),
     User    = require('../models/user');
