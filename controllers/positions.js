@@ -6,7 +6,7 @@ var express = require('express'),
     // ALL OF THE BELOW IS PLACEHOLDER CODE AND NEEDS TO BE REPLACED
 
     // INDEX
-    router.get('/', function (req, res) {
+    router.get('/positions', function (req, res) {
       if (!req.session.userId) {
         res.redirect(302, '/users/login');
       } else {
