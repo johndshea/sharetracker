@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/johndshea/stocktracker#readme",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "method-override": "^2.3.5",
