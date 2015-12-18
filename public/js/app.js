@@ -1,27 +1,5 @@
 var app = angular.module('ShareTracker', []);
 
-// Main Controller
-app.controller('MainController', ['stocks', function(stocks) {
-  var controller = this;
-  this.stocks = stocks.stocks;
-
-  this.addStock = function() {
-    if(!controller.name || !controller.ticker || controller.name === ''|| controller.ticker === '') {
-      console.log('name and ticker cannot be blank');
-      return;
-     }
-   stocks.create({
-     name: controller.name,
-     ticker: controller.ticker,
-     link: controller.link,
-    });
-    controller.name = '';
-    controller.ticker = '';
-    o.getAll();
-  };
-
-}]);
-
 app.factory('stocks', ['$http', function($http) {
   var o = {
     stocks: []
@@ -29,7 +7,13 @@ app.factory('stocks', ['$http', function($http) {
 
   // Retrieve all stocks from the database
   o.getAll = function() {
-    return $http.get('/stocks').success(function(stocks){
+    return $http.get('/positions').success(function(stocks){
+
+      //troubleshooting code
+      stocks = ['AAPL', 'MSFT'];
+      // console.log(stocks);
+
+      // REPLACE .AJAX WITH $HTTP SO AS TO ELIMINATE JQUERY? YQL DOESNT SEEM TO LIKE $HTTP THOUGH
       stocks.forEach(function(stock, i, array){
         $.ajax({
           type: 'GET',
@@ -66,4 +50,52 @@ app.factory('stocks', ['$http', function($http) {
   };
 
   return o;
+}]);
+
+// Main Controller
+app.controller('MainController', ['stocks', function(stocks) {
+  var controller = this;
+  this.stocks = stocks.stocks;
+  stocks.getAll();
+
+  // this.addStock = function() {
+  //   if(!controller.name || !controller.ticker || controller.name === ''|| controller.ticker === '') {
+  //     console.log('name and ticker cannot be blank');
+  //     return;
+  //    }
+  //  stocks.create({
+  //    name: controller.name,
+  //    ticker: controller.ticker,
+  //    link: controller.link,
+  //   });
+  //   controller.name = '';
+  //   controller.ticker = '';
+  //   o.getAll();
+  // };
+
+}]);
+
+// User Controller
+app.controller('UserController', [function () {
+  var controller = this;
+
+  this.login = function () {
+    alert('logging in');
+  };
+
+  // this.addStock = function() {
+  //   if(!controller.name || !controller.ticker || controller.name === ''|| controller.ticker === '') {
+  //     console.log('name and ticker cannot be blank');
+  //     return;
+  //    }
+  //  stocks.create({
+  //    name: controller.name,
+  //    ticker: controller.ticker,
+  //    link: controller.link,
+  //   });
+  //   controller.name = '';
+  //   controller.ticker = '';
+  //   o.getAll();
+  // };
+
 }]);

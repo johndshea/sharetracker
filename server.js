@@ -5,6 +5,7 @@ var express        = require('express'),
     bodyParser     = require('body-parser'),
     session        = require('express-session'),
     methodOverride = require('method-override'),
+    morgan         = require('morgan'),
     User           = require('./models/user.js'),
     /* required for Heroku to work */
     PORT           = process.env.PORT || 3000,
@@ -21,6 +22,8 @@ server.use(bodyParser.urlencoded({
 server.use(bodyParser.json());
 
 server.use(methodOverride('_method'));
+
+server.use(morgan('short'));
 
 server.use(session({
    secret: "sharetracker",
@@ -42,6 +45,7 @@ server.use(function (req, res, next) {
 
 /************** CRUD controllers ***************/
 server.use('/session', require('./controllers/session.js'));
+server.use('/users', require('./controllers/users.js'));
 server.use('/positions', require('./controllers/positions.js'));
 
 /************** Start Everything Up **************/

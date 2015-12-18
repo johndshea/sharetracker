@@ -7,14 +7,15 @@ var express = require('express'),
 router.post('/', function (req, res) {
   var attempt = req.body.user;
   User.findOne({ email: attempt.email }, function (err, user) {
-    if (error) {
-      console.log(error);
+    if (err) {
+      console.log(err);
     } else if (user) {
       bcrypt.compare(attempt.password, user.passwordDigest, function (compareError, match) {
         if (match) {
           req.session.userId = user._id;
           req.session.userName = user.name;
-          req.session.flash.message = "Thanks for signing in.";
+          console.log(req.session.userId, req.session.userName);
+          // req.session.flash.message = "Thanks for signing in.";
         } else {
           req.session.flash.message = "Username and password combination not found";
           console.log(compareError);
