@@ -11,22 +11,29 @@ app.factory('stocks', ['$http', function($http) {
 
       //troubleshooting code
       stocks = ['AAPL', 'MSFT'];
-      // console.log(stocks);
+      console.log(stocks);
+      //troubleshooting code
 
       // REPLACE .AJAX WITH $HTTP SO AS TO ELIMINATE JQUERY? YQL DOESNT SEEM TO LIKE $HTTP THOUGH
       stocks.forEach(function(stock, i, array){
-        $.ajax({
-          type: 'GET',
-      		url: 'https://query.yahooapis.com/v1/public/yql?',
-          data: {
-            q: 'select * from yahoo.finance.quotes' +
-            ' where symbol = "' + stock.ticker + '"',
-            format: 'json',
-            diagnostics: false,
-            env: 'http://datatables.org/alltables.env'
-          },
-      		async: true,
-      	}).success(function(yahoo_response){
+        console.log('$http starting for ' + stock);
+        // $.ajax({
+        //   type: 'GET',
+      	// 	url: 'https://query.yahooapis.com/v1/public/yql?',
+        //   data: {
+        //     q: 'select * from yahoo.finance.quotes' +
+        //     ' where symbol = "' + stock + '"',
+        //     format: 'json',
+        //     diagnostics: false,
+        //     env: 'http://datatables.org/alltables.env'
+        //   },
+      	// 	async: true,
+      	// })
+        $http({
+          method: 'GET',
+          url: 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20%3D%20"' + stock + '"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback='
+        })
+        .success(function(yahoo_response){
             stock = yahoo_response.query.results.quote;
             console.log(stock);
             o.stocks.push(stock);
