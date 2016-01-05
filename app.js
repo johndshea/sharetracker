@@ -11,7 +11,6 @@ var mongoose     = require('mongoose'),
     dbname       = "sharetracker";
 var passport = require('passport');
 
-require('./models/Stocks');
 require('./models/Users');
 require('./config/passport');
 mongoose.connect(MONGOURI + "/" + dbname);

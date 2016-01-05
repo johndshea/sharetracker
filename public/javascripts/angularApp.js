@@ -84,13 +84,16 @@ function($stateProvider, $urlRouterProvider) {
    // Log a user in
    auth.logIn = function(user){
      return $http.post('/login', user).success(function(data){
+       console.log(user);
        auth.saveToken(data.token);
      });
    };
 
    // Log a user out
    auth.logOut = function(){
-     $window.localStorage.removeItem('flapper-news-token');
+     console.log("trying to log out");
+     $http.delete('/login');
+     $window.localStorage.removeItem('stock-tracker-token');
    };
 
    return auth;
@@ -103,8 +106,9 @@ function($stateProvider, $urlRouterProvider) {
   };
 
   // Retrieve all stocks from the database
+  // rename STOCKS to POSITIONS later
   o.getAll = function() {
-    return $http.get('/stocks').success(function(stocks){
+    return $http.get('/positions').success(function(stocks){
       stocks.forEach(function(stock, i, array){
         $.ajax({
           type: 'GET',
@@ -123,37 +127,19 @@ function($stateProvider, $urlRouterProvider) {
             o.stocks.push(stock);
           });
       });
-
-      // Make Barchart API call for stock price
-      // var key = '11160ccd699a7a9e14a5426c1a42ba64';
-      // data.forEach(function(stock, i, array){
-      //   var url = 'http://marketdata.websol.barchart.com/getQuote.jsonp?key=' +
-      //   key + '&symbols=' + stock.ticker + ',';
-      //   $.ajax({
-      //     type: 'GET',
-      // 		url: url,
-      // 		async: true,
-      // 		contentType: "application/json",
-      // 		dataType: 'jsonp'
-      // 	}).success(function(data){
-      //       stock.price = data.results[0].lastPrice;
-      //       o.stocks.push(stock);
-      //     });
-      // });
-
     });
   };
 
-  o.create = function(stock) {
-    return $http.post('/stocks', stock, {
+  o.create = function(new_position) {
+    return $http.post('/positions', new_position, {
       headers: {Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data){
-      o.stocks.push(data);
+      // o.stocks.push(data);
     });
   };
 
   o.get = function(id) {
-    return $http.get('/stocks/' + id).then(function(res){
+    return $http.get('/positions/' + id).then(function(res){
       return res.data;
     });
   };
@@ -170,18 +156,18 @@ function($stateProvider, $urlRouterProvider) {
   // var updateDOM = $timeout(function(){this.stocks = stocks.stocks;}, 5000);
 
   this.addStock = function() {
-    if(!controller.name || !controller.ticker || controller.name === ''|| controller.ticker === '') {
-      console.log('name and ticker cannot be blank');
+    if(!controller.ticker || controller.ticker === '') {
+      console.log('ticker cannot be blank');
       return;
      }
    stocks.create({
-     name: controller.name,
-     ticker: controller.ticker,
-     link: controller.link,
-    });
+    new_position: { purchase_date: controller.purchase_date,
+       ticker: controller.ticker,
+       quantity: controller.quantity }
+  });
     controller.name = '';
     controller.ticker = '';
-    o.getAll();
+    // o.getAll();
   };
 
 }])

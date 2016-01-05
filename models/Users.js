@@ -6,7 +6,11 @@ var UserSchema = new mongoose.Schema({
   username: {type: String, lowercase: true, unique: true},
   hash: String,
   salt: String,
-  positions: [String]
+  positions: [{
+    ticker: {type: String, lowercase: true},
+    puchase_date: Date,
+    quantity: Number
+  }]
 });
 
 UserSchema.methods.setPassword = function(password) {

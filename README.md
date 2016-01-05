@@ -1,7 +1,13 @@
-Bugs:
-
-* FIXED: switched over to the Yahoo Query Language API from Barchart, solved the speed problem. ---- API calls are very slow, and as a result I need to set a timeout on the controller to reset the stocks array in 5 seconds after pageload. VERY hacky. I no like.
+Todo:
 
 * Still need to write a DELETE and/or edit GUI for the stocks.
+
+* re-enable AUTH on POST and DELETE
+
+* remove EJS? You're not using it.
+
+* REMOVE JQUERY.
+
+Bugs:
 
 * ui-router: assigning controller in the router config doesn't seem to work. I seem to need to attach the controller in the template as well.

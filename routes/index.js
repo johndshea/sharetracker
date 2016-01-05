@@ -4,57 +4,88 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var jwt = require('express-jwt');
 
-var Stock = mongoose.model('Stock');
 var User = mongoose.model('User');
 
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
+var currentUser = 'guest';
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index');
 });
 
-/* INDEX all stocks on home page. */
-router.get('/stocks', function(req, res, next) {
-  Stock.find(function(err, stocks){
-    if(err){ return next(err); }
+/* INDEX all stocks for a given user. */
 
-    res.json(stocks);
+// CURRENTLY SET TO RETRIEVE JOHN@TEST.COM for bugfixing purposes.
+// need to set it up to correctly interact with the current user (req.user?)
+
+router.get('/positions', function(req, res, next) {
+  console.log("user is: ", currentUser.username, ", fetching positions.");
+  User.findOne({ username: currentUser.username }, function (err, user) {
+   if (err) { console.log("didn't work");
+              // return done(err);
+            }
+    if (!user) {
+      console.log("user not found");
+      // return done(null, false, { message: 'no such user' });
+    } else {
+      res.json(user.positions);
+      console.log("user found: ", user.username, "positions: ", user.positions);
+    }
   });
 });
 
-/* POST a new stock to the database. */
-router.post('/stocks', auth, function(req, res, next) {
-  var stock = new Stock(req.body);
-  // added this on a whim - might not work
-  stock.owner = req.payload.username;
+/* POST a new stock to the database by containing the position object in req.body.new_position. */
+// Right now, AUTH is disabled so that I can bugfix using postman
 
-  stock.save(function(err, stock){
-    if(err){ return next(err); }
+router.post('/positions', auth, function(req, res, next) {
+  User.findOne({ username: currentUser.username }, function (err, user) {
 
-    res.json(stock);
+    // if there is an error, or user is not found, tell the console
+    if (err) { return done(err); }
+    if (!user) {
+      return done(null, false, { message: 'no such user' });
+    }
+
+    // console.log(req.body);
+    user.positions.push( req.body.new_position );
+    console.log(req.body.new_position);
+
+    // save the user back to the database
+    user.save(function(err, saved_user){
+      if(err){ return next(err); }
+      // return the user's current positions post-save.
+      res.json(saved_user.positions);
+    });
   });
 });
 
-/* Pre-load stocks objects from the database. */
-router.param('stock', function(req, res, next, id) {
-  var query = Stock.findById(id);
+/* DELETE a single position from the database. */
+// Right now, AUTH is disabled so that I can bugfix using postman
 
-  query.exec(function (err, stock){
-    if (err) { return next(err); }
-    if (!stock) { return next(new Error('can\'t find stock')); }
+router.delete('/positions/:position_id', /* auth, */ function(req, res, next) {
+  User.findOne({ email: "john@test.com" }, function (err, user) {
 
-    req.stock = stock;
-    return next();
-  });
-});
+    // if there is an error, or user is not found, tell the console
+    if (err) { return done(err); }
+    if (!user) {
+      return done(null, false, { message: 'no such user' });
+    }
 
-/* VIEW a single stock from the database. */
-router.get('/stocks/:stock', function(req, res, next) {
-  req.stock.populate('notes', function(err, stock) {
-    if (err) { return next(err); }
+    // console.log(req.body);
+    user.positions.forEach(function(position,index,positions){
+      if(position._id == req.params.position_id) {
+        positions.splice(index, 1);
+      }
+    });
 
-    res.json(stock);
+    // save the user back to the database
+    user.save(function(err, saved_user){
+      if(err){ return next(err); }
+      // return the user's current positions post-save.
+      res.json(saved_user.positions);
+    });
   });
 });
 
@@ -65,9 +96,7 @@ router.post('/register', function(req, res, next){
   }
 
   var user = new User();
-
   user.username = req.body.username;
-
   user.setPassword(req.body.password);
 
   user.save(function (err){
@@ -77,6 +106,7 @@ router.post('/register', function(req, res, next){
   });
 });
 
+/* LOG IN a user */
 router.post('/login', function(req, res, next){
   if(!req.body.username || !req.body.password){
     return res.status(400).json({message: 'Please fill out all fields'});
@@ -86,11 +116,18 @@ router.post('/login', function(req, res, next){
     if(err){ return next(err); }
 
     if(user){
+      console.log("user is: ", user);
+      currentUser = user;
       return res.json({token: user.generateJWT()});
     } else {
       return res.status(401).json(info);
     }
   })(req, res, next);
+});
+
+/* LOG OUT a user */
+router.delete('/login', function(req, res, next){
+  currentUser = 'guest';
 });
 
 module.exports = router;
