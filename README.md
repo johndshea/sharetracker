@@ -6,8 +6,6 @@ Todo:
 
 * remove EJS? You're not using it.
 
-* REMOVE JQUERY.
-
 Bugs:
 
 * ui-router: assigning controller in the router config doesn't seem to work. I seem to need to attach the controller in the template as well.
