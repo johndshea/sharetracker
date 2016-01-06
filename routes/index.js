@@ -87,6 +87,8 @@ router.post('/register', function(req, res, next){
   user.save(function (err){
     if(err){ return next(err); }
 
+    console.log("user is: ", user);
+    currentUser = user;
     return res.json({token: user.generateJWT()});
   });
 });

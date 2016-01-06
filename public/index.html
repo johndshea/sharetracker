@@ -9,8 +9,6 @@
   <body ng-app="StockTracker">
 
 <!-- PAGE TEMPLATE -->
-<ion-pane>
-
 <div class="bar bar-header bar-light">
   <h1 class="title">ShareTracker</h1>
 </div>
@@ -72,7 +70,7 @@
     </div>
     <div ng-show="ctrl.isLoggedIn()">
     <button href="#" class="topcoat-button" ng-click="adderEnabled=!adderEnabled"
-            ng-hide="adderEnabled">Add a Stock to the Watchlist</button>
+            ng-hide="adderEnabled">Add a Position</button>
       <div ng-show="adderEnabled">
         <h3>Add a Stock to the Watchlist</h3>
         <form class="create_stock" ng-submit="ctrl.addStock(); adderEnabled=!adderEnabled">
