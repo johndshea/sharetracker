@@ -94,6 +94,7 @@ router.post('/register', function(req, res, next){
 });
 
 /* LOG IN a user */
+
 router.post('/login', function(req, res, next){
   if(!req.body.username || !req.body.password){
     return res.status(400).json({message: 'Please fill out all fields'});
@@ -105,7 +106,7 @@ router.post('/login', function(req, res, next){
     if(user){
       console.log("user is: ", user);
       currentUser = user;
-      return res.json({token: user.generateJWT()});
+      res.json({token: user.generateJWT()});
     } else {
       return res.status(401).json(info);
     }
