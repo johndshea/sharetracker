@@ -1,10 +1,11 @@
 Todo:
 
-* Still need to write a DELETE and/or edit GUI for the stocks.
+* Still need to write a DELETE GUI for the stocks. I'm kinda halfway through - I have a button but don't know how to hook it up to the API (needs the id of the object to make the API call).
 
-* re-enable AUTH on POST and DELETE
+* Test that AUTH works on DELETE
 
-* remove EJS? You're not using it.
+* reset the "secret" to something more, well, secret.
+
 
 Bugs:
 

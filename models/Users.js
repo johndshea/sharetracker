@@ -8,7 +8,8 @@ var UserSchema = new mongoose.Schema({
   salt: String,
   positions: [{
     ticker: {type: String, lowercase: true},
-    puchase_date: Date,
+    purchase_date: Date,
+    purchase_price: Number,
     quantity: Number
   }]
 });

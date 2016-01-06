@@ -109,28 +109,18 @@ function($stateProvider, $urlRouterProvider) {
   // rename STOCKS to POSITIONS later
   o.getAll = function() {
     return $http.get('/positions').success(function(stocks){
+      o.stocks = [];
       stocks.forEach(function(stock, i, array){
 
+          // Angular-native API call instead of JQUERY. Need to shorten/wrap the URL
           console.log('$http starting for ' + stock);
           $http({
             method: 'GET',
-            url: 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20%3D%20"' + stock.ticker + '"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback='
-          })
-
-        // $.ajax({
-        //   type: 'GET',
-      	// 	url: 'https://query.yahooapis.com/v1/public/yql?',
-        //   data: {
-        //     q: 'select * from yahoo.finance.quotes' +
-        //     ' where symbol = "' + stock.ticker + '"',
-        //     format: 'json',
-        //     diagnostics: false,
-        //     env: 'http://datatables.org/alltables.env'
-        //   },
-      	// 	async: true,
-      	// })
-
-        .success(function(yahoo_response){
+            url: 'https://query.yahooapis.com/v1/public/yql?' +
+            'q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol' +
+            '%20%3D%20"' + stock.ticker + '"&format=json&diagnostics=true' +
+            '&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback='
+          }).success(function(yahoo_response){
             stock = yahoo_response.query.results.quote;
             console.log(stock);
             o.stocks.push(stock);
@@ -143,6 +133,15 @@ function($stateProvider, $urlRouterProvider) {
     return $http.post('/positions', new_position, {
       headers: {Authorization: 'Bearer '+auth.getToken()}
     }).success(function(data){
+      // o.stocks.push(data);
+    });
+  };
+
+  o.delete = function(position_id) {
+    return $http.delete('/positions', position_id, {
+      headers: {Authorization: 'Bearer '+auth.getToken()}
+    }).success(function(data){
+      console.log("successfully deleted: ", data);
       // o.stocks.push(data);
     });
   };
@@ -170,13 +169,21 @@ function($stateProvider, $urlRouterProvider) {
       return;
      }
    stocks.create({
-    new_position: { purchase_date: controller.purchase_date,
+    new_position: {
+       purchase_date: controller.purchase_date,
+       purchase_price: controller.purchase_price,
        ticker: controller.ticker,
-       quantity: controller.quantity }
+       quantity: controller.quantity
+     }
   });
     controller.name = '';
     controller.ticker = '';
-    // o.getAll();
+    stocks.getAll();
+  };
+
+  this.removeStock = function(position_id) {
+   stocks.delete(position_id);
+    // stocks.getAll();
   };
 
 }])

@@ -10,26 +10,13 @@ var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
 var currentUser = 'guest';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index');
-});
-
 /* INDEX all stocks for a given user. */
-
-// CURRENTLY SET TO RETRIEVE JOHN@TEST.COM for bugfixing purposes.
-// need to set it up to correctly interact with the current user (req.user?)
 
 router.get('/positions', function(req, res, next) {
   console.log("user is: ", currentUser.username, ", fetching positions.");
   User.findOne({ username: currentUser.username }, function (err, user) {
-   if (err) { console.log("didn't work");
-              // return done(err);
-            }
-    if (!user) {
-      console.log("user not found");
-      // return done(null, false, { message: 'no such user' });
-    } else {
+   if (err) { console.log("didn't work"); }
+    if (!user) { console.log("user not found"); } else {
       res.json(user.positions);
       console.log("user found: ", user.username, "positions: ", user.positions);
     }
@@ -37,7 +24,6 @@ router.get('/positions', function(req, res, next) {
 });
 
 /* POST a new stock to the database by containing the position object in req.body.new_position. */
-// Right now, AUTH is disabled so that I can bugfix using postman
 
 router.post('/positions', auth, function(req, res, next) {
   User.findOne({ username: currentUser.username }, function (err, user) {
@@ -62,9 +48,8 @@ router.post('/positions', auth, function(req, res, next) {
 });
 
 /* DELETE a single position from the database. */
-// Right now, AUTH is disabled so that I can bugfix using postman
 
-router.delete('/positions/:position_id', /* auth, */ function(req, res, next) {
+router.delete('/positions/:position_id', auth, function(req, res, next) {
   User.findOne({ email: "john@test.com" }, function (err, user) {
 
     // if there is an error, or user is not found, tell the console
