@@ -1,6 +1,50 @@
-var app = angular.module('StockTracker', []);
+var app = angular.module('StockTracker', ['ui.router']);
 
-app.factory('auth', ['$http', '$window', function($http, $window){
+app.config([
+'$stateProvider',
+'$urlRouterProvider',
+function($stateProvider, $urlRouterProvider) {
+
+  // for the home state, preload stocks.getAll()
+  $stateProvider
+  .state('home', {
+      url: '/home',
+      templateUrl: '/home.html',
+      controller: 'MainController',
+      resolve: {
+        stockPromise: ['stocks', function(stocks){
+          return stocks.getAll();
+        }]
+      },
+  })
+
+  .state('login', {
+    url: '/login',
+    templateUrl: '/login.html',
+    controller: 'AuthCtrl',
+    onEnter: ['$state', 'auth', function($state, auth){
+      if(auth.isLoggedIn()){
+        $state.go('home');
+      }
+    }]
+  })
+
+.state('register', {
+  url: '/register',
+  templateUrl: '/register.html',
+  controller: 'AuthCtrl',
+  onEnter: ['$state', 'auth', function($state, auth){
+    if(auth.isLoggedIn()){
+      $state.go('home');
+    }
+  }]
+});
+
+  $urlRouterProvider.otherwise('home');
+
+}])
+
+.factory('auth', ['$http', '$window', function($http, $window){
    var auth = {};
 
    auth.saveToken = function (token){
